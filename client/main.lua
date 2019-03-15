@@ -1,4 +1,4 @@
-local serverPlayerList, isWarned = {}, false
+local serverPlayerList, isWarned, warnedTimes = {}, false, 0
 
 Citizen.CreateThread(function()
 	while true do
@@ -51,9 +51,19 @@ function CountPlayers()
 	end
 
 	if Config.KickPlayer and isInstanced then
-		TriggerServerEvent('fivem-intancedfix:kickMe')
+		warnedTimes = warnedTimes + 1
+
+		if warnedTimes >= Config.MaxWarnings then
+			TriggerServerEvent('fivem-intancedfix:kickMe')
+		end
 	elseif isInstanced then
-		isWarned = true
+		warnedTimes = warnedTimes + 1
+
+		if warnedTimes >= Config.MaxWarnings then
+			isWarned = true
+		end
+	else
+		warnedTimes = 0
 	end
 end
 
@@ -79,6 +89,14 @@ function StartWarningText()
 		EndTextCommandDisplayText(0.5, 0.5)
 	end
 end
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == GetCurrentResourceName() then
+		if isWarned then
+			SetTimecycleModifier('default')
+		end
+	end
+end)
 
 RegisterNetEvent('fivem-intancedfix:sendPlayerList')
 AddEventHandler('fivem-intancedfix:sendPlayerList', function(players)
