@@ -1,5 +1,9 @@
 # fivem-instancedfix
 
+## UPDATE
+
+It semes like FiveM have fixed this "instanced" issue! This repo will be achived.
+
 This FXServer resource compares server and client player count to make sure that players are not *instanced*.
 
 ## What is being instanced anyways?
